@@ -1,0 +1,39 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/giang/Desktop/multi_planner/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/giang/Desktop/multi_planner/src/emb/px4_controllers/controller_msgs/include/**",
+        "/home/giang/Desktop/multi_planner/src/emb/landing_marker/vision_opencv/cv_bridge/include/**",
+        "/home/giang/Desktop/multi_planner/src/eigen_checks/include/**",
+        "/home/giang/Desktop/multi_planner/src/ewok_optimization/include/**",
+        "/home/giang/Desktop/multi_planner/src/ewok_poly_spline/include/**",
+        "/home/giang/Desktop/multi_planner/src/ewok_ring_buffer/include/**",
+        "/home/giang/Desktop/multi_planner/src/emb/px4_controllers/geometric_controller/include/**",
+        "/home/giang/Desktop/multi_planner/src/emb/landing_marker/vision_opencv/image_geometry/include/**",
+        "/home/giang/Desktop/multi_planner/src/emb/landing_marker/landing_planner/include/**",
+        "/home/giang/Desktop/multi_planner/src/mav_comm/mav_msgs/include/**",
+        "/home/giang/Desktop/multi_planner/src/mav_comm/mav_planning_msgs/include/**",
+        "/home/giang/Desktop/multi_planner/src/mav_trajectory_generation/mav_trajectory_generation/include/**",
+        "/home/giang/Desktop/multi_planner/src/mav_trajectory_generation/mav_trajectory_generation_example/include/**",
+        "/home/giang/Desktop/multi_planner/src/mav_trajectory_generation/mav_trajectory_generation_ros/include/**",
+        "/home/giang/Desktop/multi_planner/src/mav_trajectory_generation/mav_visualization/include/**",
+        "/home/giang/Desktop/multi_planner/src/nlopt/include/**",
+        "/home/giang/Desktop/multi_planner/src/offboard/include/**",
+        "/home/giang/Desktop/multi_planner/src/emb/landing_marker/whycon/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

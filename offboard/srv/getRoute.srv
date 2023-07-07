@@ -1,0 +1,8 @@
+#request fields
+
+---
+#response constants
+int8 current_point
+int8 last_point
+int8 nex_tpoint
+float64 remaining_estimate
