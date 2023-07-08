@@ -93,9 +93,6 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
     ros::Rate rate(50.0);
     std::printf("\n[ INFO] Mission with planner and marker Mode\n");    
     std::string llh_Path = argv;
-    // ROS_INFO_STREAM("Enter YAML Path: ");
-    // std::getline(cin, llh_Path);
-    // llh_Path = "/home/giang/Desktop/multi_planner/src/emb/px4_controllers/geometric_controller/cfg/not.yaml";
     std::cout << "Path is: " << llh_Path << std::endl;
     std::cout << "Load the number of local points: " << std::endl;
     std::ifstream llh_file(llh_Path);
@@ -105,7 +102,6 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
         std::cerr << "Failed to open file: " << llh_Path << std::endl;
         rate.sleep();
       }
-    //   return 1;
   }
   else{
     YAML::Node yamlNode = YAML::Load(llh_file);
@@ -114,7 +110,7 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
   try
     {   
         local_setpoint_.push_back(local_start_);
-        for (int i = 1; i < argc; i++) {
+        for (int i = 0; i < argc; i++) {
             Eigen::Vector3d target;
             target(0) = yamlNode[i][0].as<double>();
             target(1) = yamlNode[i][1].as<double>();
@@ -123,7 +119,6 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
             std::cout << "Local x: " << target(0) << ", Local y: " << target(1) << ", Local z: " << target(2) << std::endl;
         }
         std::cout << "Done parsing YAML file!" << std::endl;
-        // std::cout << "Latitude: " << target.x() << ", Longitude: " << target.y() << std::endl;
     }
   catch (const YAML::Exception& e)
     {
@@ -148,9 +143,6 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
         ros::spinOnce();
         r.sleep();
     }
-    // yaw_ = mav_yaw_;
-    // yaw_rate_ = 0.3;
-    // bool target_reached = false; 
     if (opt_point_received_) {
         int i = 0; 
         std::printf("\n[ INFO] Fly with optimization points\n");  
@@ -194,14 +186,10 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                 cmd_.position.y = opt_point_.y; 
                 cmd_.position.z = opt_point_.z;
                 cmd_.yaw = this_loop_alpha;
-                // cmd_.yaw_dot
-
                 if((abs(opt_point_.x - current_odom_.pose.pose.position.x) < 0.3) && (abs(opt_point_.y - current_odom_.pose.pose.position.y) < 0.3)) {
-                    // target_enu_pose_.pose.orientation = tf::createQuaternionMsgFromYaw(yaw_);
                     cmd_.yaw = yaw_;
                 }
                 else {
-                    // target_enu_pose_.pose.orientation = tf::createQuaternionMsgFromYaw(this_loop_alpha);
                     cmd_.yaw = this_loop_alpha;
                 }
                 // cmd_.yaw_dot = mav_yawvel_;
@@ -212,10 +200,6 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                     i++;
                     std::cout << "i = " << i << endl;
                 }
-
-                // getRoute(get_route_);     
-                // route_pub_.publish(get_route_);
-                // target_reached_ = checkPlanError(target_error_, x);
                 ros::spinOnce();
             }    
     }
@@ -337,10 +321,17 @@ bool OffboardControl::handleServiceRequest(offboard::getRoute::Request &req, off
 }
 
 bool OffboardControl::distanceBetween(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt) {
-    if(((cur(0) >= std::min(pre(0), nxt(0))) && cur(0) <= std::max(pre(0), nxt(0)))||((cur(1) >= std::min(pre(1), nxt(1))) && cur(1) <= std::max(pre(1), nxt(1)))) {
+    Eigen::Vector3d u, v;
+    u(0) = nxt(0) - pre(0);
+    u(1) = nxt(1) - pre(1);
+    v(0) = nxt(0) - cur(0);
+    v(1) = nxt(0) - cur(1);
+    double pro = u.dot(v);
+    std::cout << "dot product is: " << pro << std::endl;
+    if(pro<= target_error_) {
         return true;
     }
     else {
-    return false;
-    }
+        return false;
+    } 
 }

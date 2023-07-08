@@ -6,7 +6,7 @@
     <arg name="hover_time" default="5.0"/>
     <arg name="unpack_time" default="15.0"/>
     <arg name="z_delivery" default="0.5"/>
-    <arg name="path" default="" />
+    <arg name="path" default="/home/giang/Desktop/multi_planner/src/emb/px4_controllers/geometric_controller/cfg/not.yaml" />
   
     <!-- <rosparam command="load" file="$(find offboard)/config/config.yaml" /> -->
     <node name="offboard_node" pkg="offboard" type="offboard_node" output="screen">
@@ -42,7 +42,7 @@
         <param name="land_velocity" type="double" value="0.7"/>
         <param name="return_velcity" type="double" value="0.7"/>
 
-        <param name="yaw_rate" type="double" value="0.3"/>
+        <param name="yaw_rate" type="double" value="1.0"/>
         <param name="yaw_error" type="double" value="0.03"/>
 
     </node>
