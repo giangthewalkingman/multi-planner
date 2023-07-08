@@ -322,10 +322,8 @@ bool OffboardControl::handleServiceRequest(offboard::getRoute::Request &req, off
 
 bool OffboardControl::distanceBetween(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt) {
     Eigen::Vector3d u, v;
-    u(0) = nxt(0) - pre(0);
-    u(1) = nxt(1) - pre(1);
-    v(0) = nxt(0) - cur(0);
-    v(1) = nxt(0) - cur(1);
+    u = nxt - pre;
+    v = nxt - cur;
     double pro = u.dot(v);
     std::cout << "dot product is: " << pro << std::endl;
     if(pro<= target_error_) {
