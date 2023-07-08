@@ -6,9 +6,11 @@
     <arg name="hover_time" default="5.0"/>
     <arg name="unpack_time" default="15.0"/>
     <arg name="z_delivery" default="0.5"/>
+    <arg name="path" default="" />
   
     <!-- <rosparam command="load" file="$(find offboard)/config/config.yaml" /> -->
     <node name="offboard_node" pkg="offboard" type="offboard_node" output="screen">
+        <param name="YAML_path" type="str" value="$(arg path)"/>
         <param name="delivery_mode_enable" type="bool" value="$(arg delivery)"/>
         <param name="simulation_mode_enable" type="bool" value="$(arg simulation)"/>
         <param name="return_home_mode_enable" type="bool" value="$(arg return_home)"/>

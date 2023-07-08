@@ -1,7 +1,4 @@
-#request fields
-
----
-#response constants
+std_msgs/Header header
 int8 prev_point
 int8 next_point
 float64 remaining_estimate

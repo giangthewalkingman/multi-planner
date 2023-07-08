@@ -84,16 +84,6 @@ int num_points = 0;
 double dt = 0;
 //giang
 
-std::vector<Eigen::Vector3d> local3dspConvert(geometry_msgs::PoseArray x) {
-    std::vector<Eigen::Vector3d> y;
-    for(int i = 0; i < x.poses.size(); i++) {
-        y[i](0) = x.poses[i].position.x;
-        y[i](1) = x.poses[i].position.y;
-        y[i](2) = x.poses[i].position.z;
-    }
-    return y;
-}
-
 void localSetpointVecArrCallback(const std_msgs::Float32MultiArray msg) {
     int count = msg.data.size();
     ROS_INFO_STREAM(count);

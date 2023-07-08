@@ -26,6 +26,7 @@
 #include<cstdio>
 #include<vector>
 
+
 // #include<offboard/traj_gen.h>
 #include<std_msgs/Float32MultiArray.h>
 #include<std_msgs/Bool.h>
@@ -55,12 +56,14 @@
 
 #include <fstream>
 #include <yaml-cpp/yaml.h>
+#include <offboard/getRouteMsg.h>
+#include <offboard/getRoute.h>
 
 class OffboardControl
 {
   public:
 	// OffboardControl();
-	OffboardControl(const ros::NodeHandle &nh, const ros::NodeHandle &nh_private, bool input_setpoint);
+	OffboardControl(const ros::NodeHandle &nh, const ros::NodeHandle &nh_private);
 	~OffboardControl();
   private:
 	/* CONSTANT */
@@ -126,6 +129,7 @@ class OffboardControl
 	bool delivery_mode_enable_; // check enabled delivery mode or not
 	bool simulation_mode_enable_; // check enabled simulation mode or not
 	bool return_home_mode_enable_; // check enabled return home mode or not
+	bool target_reached_ = false;
 	
 	int num_of_enu_target_; // number of ENU (x,y,z) setpoints
 	std::vector<double> x_target_; // array of ENU x position of all setpoints
@@ -201,7 +205,7 @@ class OffboardControl
 	void inputPlanner(); // manage for flight with optimization point from planner
 	void plannerFlight(); // perform flight with ENU (x,y,z) setpoints from optimization planner
 	void inputPlannerAndLanding(); // manage for flight with optimization point from planner
-	void plannerAndLandingFlight(); // perform flight with ENU (x,y,z) setpoints from optimization planner and Landing at marker
+	void plannerAndLandingFlight(std::string argv); // perform flight with ENU (x,y,z) setpoints from optimization planner and Landing at marker
 
 	double calculateYawOffset(geometry_msgs::PoseStamped current, geometry_msgs::PoseStamped setpoint); // calculate yaw offset between current position and next optimization position
 
@@ -229,7 +233,7 @@ class OffboardControl
 	Eigen::Vector3d getRPY(geometry_msgs::Quaternion quat); // get roll, pitch and yaw angle from quaternion
 	// geometry_msgs::Quaternion getQuaternionMsg(double roll, double pitch, double yaw); // create quaternion msg from roll, pitch and yaw
 	
-	double distanceBetween(geometry_msgs::PoseStamped current, geometry_msgs::PoseStamped target); // calculate distance between current position and setpoint position
+	// double distanceBetween(geometry_msgs::PoseStamped current, geometry_msgs::PoseStamped target); // calculate distance between current position and setpoint position
 	geometry_msgs::Vector3 velComponentsCalc(double v_desired, geometry_msgs::PoseStamped current, geometry_msgs::PoseStamped target); // calculate components of velocity about x, y, z axis
 
 	geometry_msgs::Point WGS84ToECEF(sensor_msgs::NavSatFix wgs84); // convert from WGS84 GPS (LLA) to ECEF x,y,z
@@ -253,7 +257,7 @@ class OffboardControl
 	bool checkPosCmdError(double error, controller_msgs::PositionCommand target);
 	double distancePosCmdBetween(controller_msgs::PositionCommand target);
 	std::vector<Eigen::Vector3d> gps_target_,local_setpoint_;
-	void gpsrawCallback(const sensor_msgs::NavSatFix &msg);
+	void gpsCallback(const sensor_msgs::NavSatFix &msg);
 	Eigen::Quaterniond mav_att_;
 	double mav_yaw_ = 0, mav_yawvel_ = 0;
 	Eigen::Vector3d gps_home_,gpsraw_,local_start_,offset_;
@@ -275,6 +279,13 @@ class OffboardControl
 	geometry_msgs::Point local3dspConvert(Eigen::Vector3d x);
 	geometry_msgs::PoseArray local3dArrayConvert(std::vector<Eigen::Vector3d> x);
 	double yaw_ = 0;
+	std::string yaml_path_;
+	ros::Publisher route_pub_;
+	offboard::getRouteMsg get_route_;
+	void getRoute(offboard::getRouteMsg &msg);
+	bool handleServiceRequest(offboard::getRoute::Request &req, offboard::getRoute::Response& res);
+	ros::ServiceServer route_server;
+	bool distanceBetween(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt);
 };
 
 

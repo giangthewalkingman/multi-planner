@@ -22,6 +22,7 @@ find_package(controller_msgs REQUIRED)
 add_message_files(
   FILES
   FlatTarget.msg
+  getRouteMsg.msg
   # PositionCommand.msg
 )
 
@@ -66,6 +67,10 @@ target_link_libraries(offboard_node
   offboard_lib
 )
 
+add_executable(get_ru src/get_route.cpp)
+target_link_libraries(get_ru
+  offboard_lib
+)
 # add_executable(setmode_offb src/setmode_offb.cpp)
 # target_link_libraries(setmode_offb
 #   ${catkin_LIBRARIES}

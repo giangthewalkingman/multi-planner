@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 
     bool input_setpoint = true; // if true run offboard control else initialize parameters and receive messages
 
-    OffboardControl *offboard = new OffboardControl(nh, nh_private, input_setpoint);
+    OffboardControl *offboard = new OffboardControl(nh, nh_private);
     ros::spin();
         
     return 0;
