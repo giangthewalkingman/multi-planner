@@ -16,7 +16,7 @@
         <param name="return_home_mode_enable" type="bool" value="$(arg return_home)"/>
         
         <param name="number_of_target" type="int" value="5"/>
-        <param name="target_error" type="double" value="0.1"/>
+        <param name="target_error" type="double" value="1.0"/>
         <!-- <rosparam param="target_x_pos">[0.0, 11.0, 11.0, 0.0]</rosparam>
         <rosparam param="target_y_pos">[0.0, 0.0, 11.0, 11.0]</rosparam>
         <rosparam param="target_z_pos">[3.0, 3.0, 3.0, 3.0]</rosparam>

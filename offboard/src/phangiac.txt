@@ -1,0 +1,40 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+struct Vector3D {
+  double x;
+  double y;
+  double z;
+};
+
+Vector3D findBisector(const Vector3D& u, const Vector3D& v) {
+  Vector3D uNormalized{ u.x / std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
+                        u.y / std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
+                        u.z / std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z) };
+
+  Vector3D vNormalized{ v.x / std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z),
+                        v.y / std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z),
+                        v.z / std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z) };
+
+  Vector3D avg{ (uNormalized.x + vNormalized.x) / 2,
+                (uNormalized.y + vNormalized.y) / 2,
+                (uNormalized.z + vNormalized.z) / 2 };
+
+  Vector3D bisector{ avg.x * std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
+                     avg.y * std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
+                     avg.z * std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z) };
+
+  return bisector;
+}
+
+int main() {
+  Vector3D u{ 3.0, 4.0, 5.0 };
+  Vector3D v{ -2.0, 1.0, 7.0 };
+
+  Vector3D bisector = findBisector(u, v);
+
+  std::cout << "Bisector vector: (" << bisector.x << ", " << bisector.y << ", " << bisector.z << ")" << std::endl;
+
+  return 0;
+}

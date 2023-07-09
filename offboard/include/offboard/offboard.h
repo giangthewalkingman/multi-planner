@@ -286,6 +286,7 @@ class OffboardControl
 	bool handleServiceRequest(offboard::getRoute::Request &req, offboard::getRoute::Response& res);
 	ros::ServiceServer route_server;
 	bool distanceBetween(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt);
+	bool bisectorRay(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt1, Eigen::Vector3d nxt2);
 };
 
 

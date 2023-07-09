@@ -195,11 +195,14 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                 // cmd_.yaw_dot = mav_yawvel_;
                 cmd_.header.stamp = ros::Time::now();
                 pos_cmd_.publish(cmd_);
-                target_reached_ = distanceBetween(mav_pos_, local_setpoint_[i], local_setpoint_[i+1]);
+                // target_reached_ = distanceBetween(mav_pos_, local_setpoint_[i], local_setpoint_[i+1]);
+                target_reached_ = bisectorRay(mav_pos_, local_setpoint_[i], local_setpoint_[i+1], local_setpoint_[i+2]);
                 if(target_reached_) {
                     i++;
                     std::cout << "i = " << i << endl;
                 }
+                get_route_.prev_point = i;
+                get_route_.next_point = i+1;
                 ros::spinOnce();
             }    
     }
@@ -332,4 +335,31 @@ bool OffboardControl::distanceBetween(Eigen::Vector3d cur, Eigen::Vector3d pre, 
     else {
         return false;
     } 
+}
+
+bool OffboardControl::bisectorRay(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt1, Eigen::Vector3d nxt2) {
+    Eigen::Vector3d _nxt1_pre,_nxt1_nxt2,_bisec, _nxt1_cur;
+    _nxt1_pre = pre - nxt1;
+    _nxt1_nxt2 = nxt2 - nxt1;
+    if(_nxt1_pre.dot(_nxt1_nxt2) > 0) {
+        _bisec = _nxt1_pre/(_nxt1_pre.norm()) + _nxt1_nxt2/(_nxt1_nxt2.norm());
+    }
+    else {
+        _bisec = _nxt1_pre/(_nxt1_pre.norm()) - _nxt1_nxt2/(_nxt1_nxt2.norm());   
+    }
+    _nxt1_cur = cur - nxt1;
+    double dist_cur2nxt1 = _nxt1_cur.norm();
+    double dist_bisec = _bisec.norm();
+    double pro_dist = dist_bisec*dist_cur2nxt1;
+    double dot_dist = abs(_nxt1_cur.dot(_bisec));
+    double error = abs(pro_dist - dot_dist);
+    // std::cout << "pro dist: " << pro_dist << std::endl;
+    // std::cout << "dot dist: " << dot_dist << std::endl;
+    // std::cout << "Error is: " << error << std::endl;
+    if(error <= target_error_) {
+        return true;
+    }
+    else{
+        return false;
+    }
 }
