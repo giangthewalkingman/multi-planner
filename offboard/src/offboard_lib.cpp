@@ -9,7 +9,7 @@ OffboardControl::OffboardControl(const ros::NodeHandle &nh, const ros::NodeHandl
     check_last_opt_sub_ = nh_.subscribe("check_last_opt_point",10, &OffboardControl::checkLastOptPointCallback, this);
     pos_cmd_ = nh_.advertise<controller_msgs::PositionCommand>("/controller/pos_cmd", 1);
     local_sp_vector_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("local_sp_vector3d_array", 10);
-    route_pub_ = nh_.advertise<offboard::getRouteMsg>("route_msg_ewok", 10);
+    route_pub_ = nh_.advertise<std_msgs::String>("route_msg_ewok", 10);
     setModeClient = nh_.serviceClient<geometric_controller::setmode>("/controller/set_mode");
     route_server = nh_.advertiseService("/ewok/get_route", &OffboardControl::handleServiceRequest, this);
     nh_private_.getParam("/offboard_node/target_error", target_error_);
@@ -203,6 +203,10 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                 }
                 get_route_.prev_point = i;
                 get_route_.next_point = i+1;
+                std::string drone_state = "Drone is flying to point " + std::to_string(i+1) + ": (" + std::to_string(local_setpoint_[i+1](0)) + " " + std::to_string(local_setpoint_[i+1](1)) + " " + std::to_string(local_setpoint_[i+1](2)) + ")";
+                drone_state_.data = drone_state ;
+                ROS_INFO_STREAM(drone_state_);
+                route_pub_.publish(drone_state_);
                 ros::spinOnce();
             }    
     }

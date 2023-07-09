@@ -58,6 +58,7 @@
 #include <yaml-cpp/yaml.h>
 #include <offboard/getRouteMsg.h>
 #include <offboard/getRoute.h>
+#include <std_msgs/String.h>
 
 class OffboardControl
 {
@@ -281,12 +282,14 @@ class OffboardControl
 	double yaw_ = 0;
 	std::string yaml_path_;
 	ros::Publisher route_pub_;
+	// ros::Publisher 
 	offboard::getRouteMsg get_route_;
 	void getRoute(offboard::getRouteMsg &msg);
 	bool handleServiceRequest(offboard::getRoute::Request &req, offboard::getRoute::Response& res);
 	ros::ServiceServer route_server;
 	bool distanceBetween(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt);
 	bool bisectorRay(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt1, Eigen::Vector3d nxt2);
+	std_msgs::String drone_state_;
 };
 
 

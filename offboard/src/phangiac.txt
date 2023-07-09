@@ -1,40 +1,28 @@
-#include <iostream>
-#include <vector>
-#include <cmath>
+#include <ros/ros.h>
+#include <std_msgs/String.h>
 
-struct Vector3D {
-  double x;
-  double y;
-  double z;
-};
+int main(int argc, char** argv) {
+    ros::init(argc, argv, "string_publisher_node");
+    ros::NodeHandle nh;
 
-Vector3D findBisector(const Vector3D& u, const Vector3D& v) {
-  Vector3D uNormalized{ u.x / std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
-                        u.y / std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
-                        u.z / std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z) };
+    ros::Publisher string_pub = nh.advertise<std_msgs::String>("drone_position", 10);
 
-  Vector3D vNormalized{ v.x / std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z),
-                        v.y / std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z),
-                        v.z / std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z) };
+    // Desired 3D coordinate
+    double x = 1.0;
+    double y = 2.0;
+    double z = 3.0;
 
-  Vector3D avg{ (uNormalized.x + vNormalized.x) / 2,
-                (uNormalized.y + vNormalized.y) / 2,
-                (uNormalized.z + vNormalized.z) / 2 };
+    // Concatenate the string and coordinate
+    std::string message = "Drone is flying to point (" + std::to_string(x) + ", " +
+                          std::to_string(y) + ", " + std::to_string(z) + ")";
 
-  Vector3D bisector{ avg.x * std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
-                     avg.y * std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z),
-                     avg.z * std::sqrt(u.x * u.x + u.y * u.y + u.z * u.z) };
+    std_msgs::String string_msg;
+    string_msg.data = message;
 
-  return bisector;
-}
+    // Publish the string message
+    string_pub.publish(string_msg);
 
-int main() {
-  Vector3D u{ 3.0, 4.0, 5.0 };
-  Vector3D v{ -2.0, 1.0, 7.0 };
+    ros::spin();
 
-  Vector3D bisector = findBisector(u, v);
-
-  std::cout << "Bisector vector: (" << bisector.x << ", " << bisector.y << ", " << bisector.z << ")" << std::endl;
-
-  return 0;
+    return 0;
 }
