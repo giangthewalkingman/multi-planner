@@ -195,7 +195,9 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                 // cmd_.yaw_dot = mav_yawvel_;
                 cmd_.header.stamp = ros::Time::now();
                 pos_cmd_.publish(cmd_);
-                // target_reached_ = distanceBetween(mav_pos_, local_setpoint_[i], local_setpoint_[i+1]);
+                // double tar_distance = (mav_pos_ - local_setpoint_[i+1]).norm();
+                // double distance = (local_setpoint_[i+1] - local_setpoint_[i]).norm();
+                // if(tar_distance > 1)
                 target_reached_ = bisectorRay(mav_pos_, local_setpoint_[i], local_setpoint_[i+1], local_setpoint_[i+2]);
                 if(target_reached_) {
                     i++;
@@ -203,8 +205,8 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                 }
                 get_route_.prev_point = i;
                 get_route_.next_point = i+1;
-                std::string drone_state = "Drone is flying to point " + std::to_string(i+1) + ": (" + std::to_string(local_setpoint_[i+1](0)) + " " + std::to_string(local_setpoint_[i+1](1)) + " " + std::to_string(local_setpoint_[i+1](2)) + ")";
-                drone_state_.data = drone_state ;
+                // std::string drone_state = "Drone is flying to point " + std::to_string(i+1) + ": (" + std::to_string(local_setpoint_[i+1](0)) + " " + std::to_string(local_setpoint_[i+1](1)) + " " + std::to_string(local_setpoint_[i+1](2)) + ")";
+                drone_state_.data = "Drone is flying to point " + std::to_string(i+1) + ": (" + std::to_string(local_setpoint_[i+1](0)) + " " + std::to_string(local_setpoint_[i+1](1)) + " " + std::to_string(local_setpoint_[i+1](2)) + ")";
                 ROS_INFO_STREAM(drone_state_);
                 route_pub_.publish(drone_state_);
                 ros::spinOnce();
@@ -352,15 +354,15 @@ bool OffboardControl::bisectorRay(Eigen::Vector3d cur, Eigen::Vector3d pre, Eige
         _bisec = _nxt1_pre/(_nxt1_pre.norm()) - _nxt1_nxt2/(_nxt1_nxt2.norm());   
     }
     _nxt1_cur = cur - nxt1;
-    double dist_cur2nxt1 = _nxt1_cur.norm();
-    double dist_bisec = _bisec.norm();
-    double pro_dist = dist_bisec*dist_cur2nxt1;
-    double dot_dist = abs(_nxt1_cur.dot(_bisec));
+    double dist_cur2nxt1 = _nxt1_cur.norm(); //distance between current pose to next target
+    double dist_bisec = _bisec.norm(); //length of bisector
+    double pro_dist = dist_bisec*dist_cur2nxt1; //product of 2 distances above
+    double dot_dist = abs(_nxt1_cur.dot(_bisec)); //dot product of 2 vectors: current to target and bisector
     double error = abs(pro_dist - dot_dist);
     // std::cout << "pro dist: " << pro_dist << std::endl;
     // std::cout << "dot dist: " << dot_dist << std::endl;
     // std::cout << "Error is: " << error << std::endl;
-    if(error <= target_error_) {
+    if(error <= 0.3 && dist_cur2nxt1 <=1.0) { //1.0 is to limit the range of bisect method
         return true;
     }
     else{
