@@ -6,7 +6,7 @@
     <arg name="hover_time" default="5.0"/>
     <arg name="unpack_time" default="15.0"/>
     <arg name="z_delivery" default="0.5"/>
-    <arg name="path" default="/home/giang/Desktop/multi_planner/src/emb/px4_controllers/geometric_controller/cfg/not.yaml" />
+    <arg name="path" default="" />
   
     <!-- <rosparam command="load" file="$(find offboard)/config/config.yaml" /> -->
     <node name="offboard_node" pkg="offboard" type="offboard_node" output="screen">
@@ -46,4 +46,17 @@
         <param name="yaw_error" type="double" value="0.03"/>
 
     </node>
+	<node name="spline_optimization_example" pkg="ewok_optimization" type="spline_optimization_example3" output="screen"> -->
+		<rosparam param="x_pos">[2.0, 16.0]</rosparam> 
+		<rosparam param="y_pos">[2.0, 2.0]</rosparam> 
+		<rosparam param="z_pos">[3.0, 3.0]</rosparam>
+
+		<param name="number_of_target" type="int" value="2"/>
+		<param name="target_error" type="double" value="0.1"/>
+		<param name="odom_error" type="bool" value="true"/> false
+		<param name="number_of_points" type="int" value="10"/>
+		<param name="dt_value" type="double" value="0.4"/>
+	</node>
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find ewok_optimization)/rviz/optimization_example.rviz" />
+
 </launch>

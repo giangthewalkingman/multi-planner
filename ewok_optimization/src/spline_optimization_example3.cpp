@@ -329,14 +329,14 @@ int main(int argc, char **argv) {
     typename ewok::Polynomial3DOptimization<10>::Vector3Array vec;   //vec la mang cac vector3
     while(ros::ok() && !local3dsp_received_) {
         ros::Rate rate(2);
-        ROS_INFO_STREAM("Waiting for local 3d array");
+        // ROS_INFO_STREAM("Waiting for local 3d array");
         ros::spinOnce();
         rate.sleep();
     }
-    std::cout << "Global setpoints to generate the global trajectory:\n" << std::endl;
+    // std::cout << "Global setpoints to generate the global trajectory:\n" << std::endl;
     for(auto target : local3dsp_vector_) {
         vec.push_back(target);
-        std::cout << "Target: ["<< target(0) << ", " << target(1) << ", " << target(2) << "]\n";
+        // std::cout << "Target: ["<< target(0) << ", " << target(1) << ", " << target(2) << "]\n";
     }
     std::cout << std::endl;
 
@@ -366,9 +366,9 @@ int main(int argc, char **argv) {
 
 
     double tc = spline_opt.getClosestTrajectoryTime(Eigen::Vector3d(-3, -5, 1), 2.0);
-    ROS_INFO_STREAM("Closest time: " << tc);
+    // ROS_INFO_STREAM("Closest time: " << tc);
 
-    ROS_INFO("Finished setting up data");
+    // ROS_INFO("Finished setting up data");
 
     double current_time = 0;
 
@@ -381,7 +381,7 @@ int main(int argc, char **argv) {
     ewok::EuclideanDistanceRingBuffer<POW> rrb(0.1, 1.0);
     while(ros::ok() && !local3dsp_received_) {
         // start_reached = checkPosition(target_error_, current_pose, targetTransfer(vec[0].x(), vec[0].y(), vec[0].z()));
-        ROS_INFO_STREAM("Waiting for local array!");
+        // ROS_INFO_STREAM("Waiting for local array!");
         ros::spinOnce();
     }
     start_reached = false;
@@ -406,7 +406,7 @@ int main(int argc, char **argv) {
         num_iterations++;
 
 
-        ROS_INFO_STREAM("Finished optimization in " << miliseconds << " ms. Error: " << error);
+        // ROS_INFO_STREAM("Finished optimization in " << miliseconds << " ms. Error: " << error);
 
         spline_opt.getMarkers(after_opt_markers, "after_opt",
                             Eigen::Vector3d(0, 1, 0),
@@ -416,10 +416,9 @@ int main(int argc, char **argv) {
 
         spline_opt.addLastControlPoint();
 
-        std :: cout << "=============================================" << std::endl;
-        std :: cout << "First Control Point: \n" << spline_opt.getFirstOptimizationPoint() << std::endl;
-        std :: cout << "=============================================" << std::endl;
-        //std :: cout << "dt = " << dt << ", num_of_points = " << num_points << std :: endl;
+        // std :: cout << "=============================================" << std::endl;
+        // std :: cout << "First Control Point: \n" << spline_opt.getFirstOptimizationPoint() << std::endl;
+        // std :: cout << "=============================================" << std::endl;
 
         last_ctrl_point.x = spline_opt.getFirstOptimizationPoint().x();
         last_ctrl_point.y = spline_opt.getFirstOptimizationPoint().y();

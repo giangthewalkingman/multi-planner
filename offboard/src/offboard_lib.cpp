@@ -207,7 +207,7 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                 get_route_.next_point = i+1;
                 // std::string drone_state = "Drone is flying to point " + std::to_string(i+1) + ": (" + std::to_string(local_setpoint_[i+1](0)) + " " + std::to_string(local_setpoint_[i+1](1)) + " " + std::to_string(local_setpoint_[i+1](2)) + ")";
                 drone_state_.data = "Drone is flying to point " + std::to_string(i+1) + ": (" + std::to_string(local_setpoint_[i+1](0)) + " " + std::to_string(local_setpoint_[i+1](1)) + " " + std::to_string(local_setpoint_[i+1](2)) + ")";
-                ROS_INFO_STREAM(drone_state_);
+                // ROS_INFO_STREAM(drone_state_);
                 route_pub_.publish(drone_state_);
                 ros::spinOnce();
             }    
