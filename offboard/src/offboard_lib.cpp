@@ -57,6 +57,15 @@ void OffboardControl::waitForPredicate(double hz) {
         std::printf("          Set parameter 'simulation_mode_enable' to true and relaunch node for simulation\n");
         std::printf("          > roslaunch offboard offboard.launch simulation_mode_enable:=true\n");
     }
+    setModeCall.request.mode = setModeCall.request.MISSION_EXECUTION;
+    setModeCall.request.timeout = 50;
+    // setModeClient.call(setModeCall);
+    while(!setModeCall.response.success) {
+        setModeClient.call(setModeCall);
+        ROS_INFO_STREAM("Waiting for Mode 3");
+        ros::spinOnce();
+        rate.sleep();
+    }
     operation_time_1_ = ros::Time::now();
 }
 
@@ -90,6 +99,7 @@ void OffboardControl::checkLastOptPointCallback(const std_msgs::Bool::ConstPtr &
 }
 
 void OffboardControl::plannerAndLandingFlight(std::string argv) {
+    bool last_target;
     ros::Rate rate(50.0);
     std::printf("\n[ INFO] Mission with planner and marker Mode\n");    
     std::string llh_Path = argv;
@@ -209,7 +219,15 @@ void OffboardControl::plannerAndLandingFlight(std::string argv) {
                 drone_state_.data = "Drone is flying to point " + std::to_string(i+1) + ": (" + std::to_string(local_setpoint_[i+1](0)) + " " + std::to_string(local_setpoint_[i+1](1)) + " " + std::to_string(local_setpoint_[i+1](2)) + ")";
                 // ROS_INFO_STREAM(drone_state_);
                 route_pub_.publish(drone_state_);
+                last_target = checkPlanError(target_error_, local_setpoint_[local_setpoint_.size()-1]);
+                if(last_target) {
+                    setModeCall.request.mode = setModeCall.request.HOLD;
+                    setModeCall.request.sub = z_takeoff_; 
+                    setModeCall.request.timeout = 50;
+                    setModeClient.call(setModeCall);
+                }
                 ros::spinOnce();
+                rate.sleep();
             }    
     }
     else {

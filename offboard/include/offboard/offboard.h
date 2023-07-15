@@ -290,6 +290,7 @@ class OffboardControl
 	bool distanceBetween(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt);
 	bool bisectorRay(Eigen::Vector3d cur, Eigen::Vector3d pre, Eigen::Vector3d nxt1, Eigen::Vector3d nxt2);
 	std_msgs::String drone_state_;
+
 };
 
 
